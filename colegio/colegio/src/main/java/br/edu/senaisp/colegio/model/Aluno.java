@@ -16,7 +16,8 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class Aluno {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = 
+					GenerationType.IDENTITY)
 	private Long id;
 	@NotBlank
 	@Size(min=2, max=120)

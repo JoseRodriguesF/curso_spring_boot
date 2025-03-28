@@ -3,13 +3,14 @@ package br.edu.senaisp.colegio.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.edu.senaisp.colegio.model.Aluno;
 import br.edu.senaisp.colegio.repository.AlunoRepository;
 import br.edu.senaisp.colegio.repository.TurmaRepository;
-
 
 @Service
 public class AlunoService {
@@ -19,35 +20,39 @@ public class AlunoService {
 	
 	@Autowired
 	private TurmaRepository repoTurma;
+	
 
 	public Aluno gravarAluno(Aluno a) {
 		try {
 			return repoAluno.save(a);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Não foi possivel inserir o aluno");
+			
 		}
 	}
 
 	public List<Aluno> buscarTodos() {
-
 		return repoAluno.findAll();
 	}
 
 	public Aluno buscarPorId(Long id) {
-		Optional<Aluno> op = repoAluno.findById(id);
+
+		  Optional<Aluno> op = repoAluno.findById(id);
+		
 		
 		return op.orElse(null);
 	}
 
-	public Aluno alterarAluno(Long id, Aluno a) {
-		 Optional<Aluno> op = repoAluno.findById(id);
-	      
-	      if (op.isPresent()) {
-	    	  a.setId(id);
-	      	  return repoAluno.save(a);
-	      }
-	      else
-	    	  return null;
+	public Aluno alunoAlterar(Aluno a, Long id) {
+
+		Optional<Aluno> op = repoAluno.findById(id);
+		if (op.isPresent()) {
+			a.setId(id);
+			return repoAluno.save(a);
+		} else {
+			return null;
+		}
+
 	}
 
 	public Aluno excluirPorId(Long id) {
@@ -57,10 +62,11 @@ public class AlunoService {
 				repoAluno.deleteById(id);
 				return a;
 			}
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		}
+
 		return null;
 	}
 }

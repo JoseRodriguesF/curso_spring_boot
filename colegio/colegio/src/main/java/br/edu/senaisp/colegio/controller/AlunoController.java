@@ -16,65 +16,74 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.senaisp.colegio.model.Aluno;
 import br.edu.senaisp.colegio.model.Turma;
 import br.edu.senaisp.colegio.service.AlunoService;
+import br.edu.senaisp.colegio.service.TurmaService;
 
 @RestController
 @RequestMapping("/api/aluno")
 public class AlunoController {
-
+	
 	@Autowired
-	private AlunoService alunoService;
-
+	private AlunoService alunoService; 
+	
 	@GetMapping
 	public ResponseEntity buscarTodos() {
 		return ResponseEntity.ok(alunoService.buscarTodos());
 	}
-
+	
 	@GetMapping("/{id}")
-	public ResponseEntity<Aluno> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity buscarPorId(
+			@PathVariable Long id) {
 		Aluno a = alunoService.buscarPorId(id);
 		if (a == null)
 			return ResponseEntity.notFound().build();
-		else
-			return ResponseEntity.ok(a);
-	}
-
+		else 
+			return ResponseEntity.status(HttpStatus.CREATED).build();
+	} 
+	
 	@PostMapping
-	public ResponseEntity inserir(@RequestBody Aluno a) {
-
+	public ResponseEntity inserir(
+			@RequestBody Aluno a) {
+		
 		try {
-			return ResponseEntity.ok(alunoService.gravarAluno(a));
+			return ResponseEntity.ok(
+					alunoService.gravarAluno(a)
+					);
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return ResponseEntity.badRequest()
+					.body(e.getMessage());
 		}
 
 	}
-
+	
 	@PutMapping("/{id}")
-	public ResponseEntity alterar(@PathVariable Long id, @RequestBody Aluno a) {
-		
-		a = alunoService.alterarAluno(id, a);
-		if(a == null) 
+	public ResponseEntity alterar(
+			@PathVariable Long id,
+			@RequestBody Aluno a
+			) {
+		if (a == null) {
 			return ResponseEntity.notFound().build();
-		else
+		} else {
 			return ResponseEntity.status(HttpStatus.OK).body(a);
-		
-	}
-
+		}
+	}	
+	
 	@DeleteMapping("/{id}")
-	public ResponseEntity excluir(@PathVariable Long id) {
+	public ResponseEntity excluir(
+			@PathVariable Long id) {
 		try {
-			Aluno t = alunoService.excluirPorId(id);
+			Aluno a = alunoService.excluirPorId(id);
 			
-			if (t == null)
+			if (a == null)
 				return ResponseEntity.notFound().build();
 			else
-				return ResponseEntity.ok(t);			
+				return ResponseEntity.ok(a);			
 			
 		} catch (Exception e) {
 			return ResponseEntity.badRequest()
 					.body(e.getMessage());
 		}
-		
-	}
+	}		
+	
+	
 
 }
